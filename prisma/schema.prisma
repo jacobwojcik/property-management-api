@@ -1,0 +1,104 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Property {
+  id          String       @id @default(uuid())
+  city        String
+  street      String
+  state       State
+  zipCode     String       @db.Char(5)
+  lat         Float
+  long        Float
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  weatherData WeatherData?
+
+  @@index([city])
+  @@index([state])
+  @@index([zipCode])
+}
+
+model WeatherData {
+  id                  String   @id @default(uuid())
+  propertyId          String   @unique
+  property            Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  temperature         Float
+  weatherCode         Int
+  weatherDescriptions String[]
+  windSpeed           Float
+  windDegree          Int
+  windDir             String
+  pressure            Int
+  precip              Float
+  humidity            Int
+  cloudCover          Int
+  feelsLike           Float
+  uvIndex             Int
+  visibility          Int
+  isDay               String
+  observationTime     String
+  lastUpdated         DateTime @default(now())
+
+  @@index([propertyId])
+}
+
+enum State {
+  AL
+  AK
+  AZ
+  AR
+  CA
+  CO
+  CT
+  DE
+  FL
+  GA
+  HI
+  ID
+  IL
+  IN
+  IA
+  KS
+  KY
+  LA
+  ME
+  MD
+  MA
+  MI
+  MN
+  MS
+  MO
+  MT
+  NE
+  NV
+  NH
+  NJ
+  NM
+  NY
+  NC
+  ND
+  OH
+  OK
+  OR
+  PA
+  RI
+  SC
+  SD
+  TN
+  TX
+  UT
+  VT
+  VA
+  WA
+  WV
+  WI
+  WY
+  DC
+  PR
+}
