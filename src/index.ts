@@ -1,28 +1,14 @@
-import { readFileSync } from 'fs';
-import { resolve } from 'path';
+import { Server } from './infrastructure/server/server.js';
+import { Container } from './infrastructure/deps-manager/container.js';
 
-import { ApolloServer } from '@apollo/server';
-import { startStandaloneServer } from '@apollo/server/standalone';
-import { PrismaClient } from '@prisma/client';
+const container = Container.getInstance();
+const server = new Server(container);
 
-import type { Resolvers } from './generated/graphql';
-
-const prisma = new PrismaClient();
-
-const typeDefs = readFileSync(resolve('src/schema/schema.graphql'), 'utf-8');
-
-const resolvers: Resolvers = {
-  Query: {},
-};
-
-const server = new ApolloServer({
-  typeDefs,
-  resolvers,
-});
-
-const { url } = await startStandaloneServer(server, {
-  listen: { port: 4000 },
-  context: async ({}) => ({ prisma }),
-});
-
-console.log(`🚀  Server ready at: ${url}`);
+server
+  .listen()
+  .then((url) => {
+    console.log(`🚀  Server ready at: ${url}`);
+  })
+  .catch((error) => {
+    console.error('Failed to start server:', error);
+  });
