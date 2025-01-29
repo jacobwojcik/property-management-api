@@ -35,14 +35,16 @@ export class Server {
     return readFileSync(resolve('src/graphql/schema.graphql'), 'utf-8');
   }
 
-  // TODO: Run first
   private createResolvers() {
+    const { Query: propertyQuery, Mutation: propertyMutation } =
+      createPropertyResolvers(this.container);
+
     return {
       Query: {
-        ...createPropertyResolvers(this.container).Query,
+        ...propertyQuery,
       },
       Mutation: {
-        ...createPropertyResolvers(this.container).Mutation,
+        ...propertyMutation,
       },
     };
   }
