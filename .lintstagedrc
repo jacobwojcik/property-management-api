@@ -1,5 +1,4 @@
 {
-  "*.ts": ["eslint --fix", "prettier --write"],
-  "*.{json,md,yml}": ["prettier --write"],
-  "*.prisma": ["prisma format"]
+  "src/**/*.ts": ["eslint --fix", "prettier --write"],
+  "*.{json,md,yml}": ["prettier --write"]
 }

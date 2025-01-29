@@ -24,6 +24,7 @@ export type Incremental<T> =
   | {
       [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never;
     };
+export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 export type RequireFields<T, K extends keyof T> = Omit<T, K> & {
   [P in K]-?: NonNullable<T[P]>;
 };
@@ -39,8 +40,6 @@ export type Scalars = {
 
 export type CreatePropertyInput = {
   city: Scalars['String']['input'];
-  lat: Scalars['Float']['input'];
-  long: Scalars['Float']['input'];
   state: State;
   street: Scalars['String']['input'];
   zipCode: Scalars['String']['input'];
@@ -74,15 +73,53 @@ export type Property = {
   zipCode: Scalars['String']['output'];
 };
 
+export type PropertyFilter = {
+  city?: InputMaybe<Scalars['String']['input']>;
+  state?: InputMaybe<State>;
+  zipCode?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type PropertyPageInfo = {
+  __typename?: 'PropertyPageInfo';
+  currentPage: Scalars['Int']['output'];
+  hasNextPage: Scalars['Boolean']['output'];
+  hasPreviousPage: Scalars['Boolean']['output'];
+  totalPages: Scalars['Int']['output'];
+};
+
+export type PropertyPaginatedResult = {
+  __typename?: 'PropertyPaginatedResult';
+  pageInfo: PropertyPageInfo;
+  properties: Array<Property>;
+  totalCount: Scalars['Int']['output'];
+};
+
+export enum PropertySortField {
+  CreatedAt = 'CREATED_AT',
+}
+
 export type Query = {
   __typename?: 'Query';
-  getProperties: Array<Property>;
+  getProperties: PropertyPaginatedResult;
   getProperty?: Maybe<Property>;
+};
+
+export type QueryGetPropertiesArgs = {
+  filter?: InputMaybe<PropertyFilter>;
+  page?: InputMaybe<Scalars['Int']['input']>;
+  pageSize?: InputMaybe<Scalars['Int']['input']>;
+  sortBy?: InputMaybe<PropertySortField>;
+  sortOrder?: InputMaybe<SortOrder>;
 };
 
 export type QueryGetPropertyArgs = {
   id: Scalars['ID']['input'];
 };
+
+export enum SortOrder {
+  Asc = 'ASC',
+  Desc = 'DESC',
+}
 
 export enum State {
   Ak = 'AK',
@@ -276,7 +313,16 @@ export type ResolversTypes = {
   Int: ResolverTypeWrapper<Scalars['Int']['output']>;
   Mutation: ResolverTypeWrapper<{}>;
   Property: ResolverTypeWrapper<PrismaProperty>;
+  PropertyFilter: PropertyFilter;
+  PropertyPageInfo: ResolverTypeWrapper<PropertyPageInfo>;
+  PropertyPaginatedResult: ResolverTypeWrapper<
+    Omit<PropertyPaginatedResult, 'properties'> & {
+      properties: Array<ResolversTypes['Property']>;
+    }
+  >;
+  PropertySortField: PropertySortField;
   Query: ResolverTypeWrapper<{}>;
+  SortOrder: SortOrder;
   State: State;
   String: ResolverTypeWrapper<Scalars['String']['output']>;
   WeatherData: ResolverTypeWrapper<PrismaWeatherData>;
@@ -292,6 +338,11 @@ export type ResolversParentTypes = {
   Int: Scalars['Int']['output'];
   Mutation: {};
   Property: PrismaProperty;
+  PropertyFilter: PropertyFilter;
+  PropertyPageInfo: PropertyPageInfo;
+  PropertyPaginatedResult: Omit<PropertyPaginatedResult, 'properties'> & {
+    properties: Array<ResolversParentTypes['Property']>;
+  };
   Query: {};
   String: Scalars['String']['output'];
   WeatherData: PrismaWeatherData;
@@ -343,15 +394,51 @@ export type PropertyResolvers<
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type PropertyPageInfoResolvers<
+  ContextType = Context,
+  ParentType extends
+    ResolversParentTypes['PropertyPageInfo'] = ResolversParentTypes['PropertyPageInfo'],
+> = {
+  currentPage?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  hasNextPage?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  hasPreviousPage?: Resolver<
+    ResolversTypes['Boolean'],
+    ParentType,
+    ContextType
+  >;
+  totalPages?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type PropertyPaginatedResultResolvers<
+  ContextType = Context,
+  ParentType extends
+    ResolversParentTypes['PropertyPaginatedResult'] = ResolversParentTypes['PropertyPaginatedResult'],
+> = {
+  pageInfo?: Resolver<
+    ResolversTypes['PropertyPageInfo'],
+    ParentType,
+    ContextType
+  >;
+  properties?: Resolver<
+    Array<ResolversTypes['Property']>,
+    ParentType,
+    ContextType
+  >;
+  totalCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type QueryResolvers<
   ContextType = Context,
   ParentType extends
     ResolversParentTypes['Query'] = ResolversParentTypes['Query'],
 > = {
   getProperties?: Resolver<
-    Array<ResolversTypes['Property']>,
+    ResolversTypes['PropertyPaginatedResult'],
     ParentType,
-    ContextType
+    ContextType,
+    RequireFields<QueryGetPropertiesArgs, 'page' | 'pageSize'>
   >;
   getProperty?: Resolver<
     Maybe<ResolversTypes['Property']>,
@@ -395,6 +482,8 @@ export type Resolvers<ContextType = Context> = {
   DateTime?: GraphQLScalarType;
   Mutation?: MutationResolvers<ContextType>;
   Property?: PropertyResolvers<ContextType>;
+  PropertyPageInfo?: PropertyPageInfoResolvers<ContextType>;
+  PropertyPaginatedResult?: PropertyPaginatedResultResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
   WeatherData?: WeatherDataResolvers<ContextType>;
 };

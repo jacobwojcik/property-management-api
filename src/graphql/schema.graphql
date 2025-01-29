@@ -90,8 +90,42 @@ enum State {
 scalar DateTime
 
 type Query {
+  getProperties(
+    sortBy: PropertySortField
+    sortOrder: SortOrder
+    filter: PropertyFilter
+    page: Int = 1
+    pageSize: Int = 10
+  ): PropertyPaginatedResult!
   getProperty(id: ID!): Property
-  getProperties: [Property!]!
+}
+
+type PropertyPaginatedResult {
+  properties: [Property!]!
+  pageInfo: PropertyPageInfo!
+  totalCount: Int!
+}
+
+type PropertyPageInfo {
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+  currentPage: Int!
+  totalPages: Int!
+}
+
+input PropertyFilter {
+  city: String
+  state: State
+  zipCode: String
+}
+
+enum PropertySortField {
+  CREATED_AT
+}
+
+enum SortOrder {
+  ASC
+  DESC
 }
 
 type Mutation {
@@ -104,6 +138,4 @@ input CreatePropertyInput {
   street: String!
   state: State!
   zipCode: String!
-  lat: Float!
-  long: Float!
 }
