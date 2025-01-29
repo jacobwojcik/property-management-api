@@ -6,15 +6,21 @@
     "compile": "tsc",
     "start": "pnpm run compile && node ./dist/index.js",
     "dev": "tsc --watch & node --watch ./dist/index.js",
-    "db:migrate": "prisma migrate dev",
+    "db:migrate": "prisma migrate dev --schema=prisma/schemas/dev/schema.prisma",
+    "db:migrate:test": "prisma migrate dev --schema=prisma/schemas/test/schema.prisma",
     "db:generate": "prisma generate",
-    "db:studio": "prisma studio",
+    "db:studio": "prisma studio --schema=prisma/schemas/dev/schema.prisma",
+    "db:studio:test": "prisma studio --schema=prisma/schemas/test/schema.prisma",
     "lint": "eslint . --ext .ts",
     "format": "prettier --write . && npx prisma format",
     "format:check": "prettier --check . && npx prisma format --check",
     "prepare": "husky",
     "type-check": "tsc --noEmit",
-    "generate": "graphql-codegen"
+    "generate": "graphql-codegen",
+    "test": "vitest --sequence.concurrent=false",
+    "prisma:generate": "prisma generate --schema=prisma/schemas/dev/schema.prisma",
+    "prisma:generate:test": "prisma generate --schema=prisma/schemas/test/schema.prisma",
+    "ci": "pnpm type-check && pnpm lint && pnpm test"
   },
   "keywords": [],
   "author": "",
@@ -25,18 +31,24 @@
     "@apollo/server": "^4.11.3",
     "@prisma/client": "^6.2.1",
     "graphql": "^16.10.0",
+    "graphql-tag": "^2.12.6",
     "pg": "^8.11.3",
-    "zod": "^3.24.1"
+    "zod": "^3.24.1",
+    "pino": "^8.19.0",
+    "pino-pretty": "^10.3.1"
   },
   "devDependencies": {
     "@commitlint/cli": "^19.3.0",
     "@commitlint/config-conventional": "^19.2.2",
+    "@graphql-codegen/cli": "^5.0.4",
     "@graphql-codegen/graphql-modules-preset": "^4.0.12",
     "@graphql-codegen/typescript": "^4.1.2",
     "@graphql-codegen/typescript-resolvers": "^4.4.1",
     "@types/node": "^22.10.5",
+    "@types/pg": "^8.11.2",
     "@typescript-eslint/eslint-plugin": "^8.19.1",
     "@typescript-eslint/parser": "^8.19.1",
+    "@vitest/coverage-v8": "^1.3.1",
     "eslint": "^8.38.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-file-extension-in-import-ts": "^2.1.1",
@@ -48,6 +60,6 @@
     "prettier": "^3.4.2",
     "prisma": "^6.2.1",
     "typescript": "^5.7.3",
-    "@types/pg": "^8.11.2"
+    "vitest": "^3.0.4"
   }
 }
