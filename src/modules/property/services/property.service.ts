@@ -6,7 +6,7 @@ import type {
 } from '../../../graphql/graphql';
 import type { WeatherService } from '../../weather/services/weather.service.js';
 
-import { createPropertySchema } from '../schemas/property.schema.js';
+import { createPropertySchema } from '../schema/property.schema.js';
 import { ValidationError } from '../../../shared/errors/base.error.js';
 
 export class PropertyService {

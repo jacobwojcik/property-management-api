@@ -1,5 +1,5 @@
 import type { PrismaClient, Property, Prisma } from '@prisma/client';
-import type { PropertyFilter } from '../schemas/property.schema';
+import type { PropertyFilter } from '../schema/property.schema';
 import type { IPropertyRepository } from './property.repository.interface';
 
 export class PropertyRepository implements IPropertyRepository {

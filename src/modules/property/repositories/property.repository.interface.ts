@@ -1,5 +1,5 @@
 import type { Property, Prisma } from '@prisma/client';
-import type { PropertyFilter } from '../schemas/property.schema';
+import type { PropertyFilter } from '../schema/property.schema';
 
 export interface IPropertyRepository {
   findMany(
