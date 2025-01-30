@@ -54,7 +54,7 @@ jobs:
           pnpm prisma:generate
 
       - name: Run migrations
-        run: pnpm db:migrate
+        run: pnpm db:migrate:test
 
       - name: Type Check
         run: pnpm type-check
