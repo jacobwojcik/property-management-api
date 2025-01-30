@@ -1,6 +1,6 @@
 schema: src/graphql/schema.graphql
 generates:
-  src/graphql/graphql.ts:
+  src/graphql/types.ts:
     plugins:
       - add:
           content: |
@@ -13,3 +13,6 @@ generates:
     config:
       scalars:
         DateTime: Date
+      enumsAsTypes: false
+      enumValues:
+        State: '@prisma/client#State'

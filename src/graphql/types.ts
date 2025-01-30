@@ -3,6 +3,7 @@
 // @generated
 // This file was automatically generated and should not be edited.
 
+import { State } from '@prisma/client';
 import {
   GraphQLResolveInfo,
   GraphQLScalarType,
@@ -31,6 +32,9 @@ export type Incremental<T> =
 export type RequireFields<T, K extends keyof T> = Omit<T, K> & {
   [P in K]-?: NonNullable<T[P]>;
 };
+export type EnumResolverSignature<T, AllowedValues = any> = {
+  [key in keyof T]?: AllowedValues;
+};
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: { input: string; output: string };
@@ -39,12 +43,11 @@ export type Scalars = {
   Int: { input: number; output: number };
   Float: { input: number; output: number };
   DateTime: { input: Date; output: Date };
-  State: { input: any; output: any };
 };
 
 export type CreatePropertyInput = {
   city: Scalars['String']['input'];
-  state: Scalars['State']['input'];
+  state: State;
   street: Scalars['String']['input'];
   zipCode: Scalars['String']['input'];
 };
@@ -70,7 +73,7 @@ export type Property = {
   id: Scalars['ID']['output'];
   lat: Scalars['Float']['output'];
   long: Scalars['Float']['output'];
-  state: Scalars['State']['output'];
+  state: State;
   street: Scalars['String']['output'];
   updatedAt: Scalars['DateTime']['output'];
   weatherData?: Maybe<WeatherData>;
@@ -79,7 +82,7 @@ export type Property = {
 
 export type PropertyFilter = {
   city?: InputMaybe<Scalars['String']['input']>;
-  state?: InputMaybe<Scalars['State']['input']>;
+  state?: InputMaybe<State>;
   zipCode?: InputMaybe<Scalars['String']['input']>;
 };
 
@@ -124,6 +127,8 @@ export enum SortOrder {
   Asc = 'ASC',
   Desc = 'DESC',
 }
+
+export { State };
 
 export type WeatherData = {
   __typename?: 'WeatherData';
@@ -268,7 +273,7 @@ export type ResolversTypes = {
   PropertySortField: PropertySortField;
   Query: ResolverTypeWrapper<{}>;
   SortOrder: SortOrder;
-  State: ResolverTypeWrapper<Scalars['State']['output']>;
+  State: State;
   String: ResolverTypeWrapper<Scalars['String']['output']>;
   WeatherData: ResolverTypeWrapper<WeatherData>;
 };
@@ -287,7 +292,6 @@ export type ResolversParentTypes = {
   PropertyPageInfo: PropertyPageInfo;
   PropertyPaginatedResult: PropertyPaginatedResult;
   Query: {};
-  State: Scalars['State']['output'];
   String: Scalars['String']['output'];
   WeatherData: WeatherData;
 };
@@ -392,10 +396,63 @@ export type QueryResolvers<
   >;
 };
 
-export interface StateScalarConfig
-  extends GraphQLScalarTypeConfig<ResolversTypes['State'], any> {
-  name: 'State';
-}
+export type StateResolvers = EnumResolverSignature<
+  {
+    AK?: any;
+    AL?: any;
+    AR?: any;
+    AZ?: any;
+    CA?: any;
+    CO?: any;
+    CT?: any;
+    DC?: any;
+    DE?: any;
+    FL?: any;
+    GA?: any;
+    HI?: any;
+    IA?: any;
+    ID?: any;
+    IL?: any;
+    IN?: any;
+    KS?: any;
+    KY?: any;
+    LA?: any;
+    MA?: any;
+    MD?: any;
+    ME?: any;
+    MI?: any;
+    MN?: any;
+    MO?: any;
+    MS?: any;
+    MT?: any;
+    NC?: any;
+    ND?: any;
+    NE?: any;
+    NH?: any;
+    NJ?: any;
+    NM?: any;
+    NV?: any;
+    NY?: any;
+    OH?: any;
+    OK?: any;
+    OR?: any;
+    PA?: any;
+    PR?: any;
+    RI?: any;
+    SC?: any;
+    SD?: any;
+    TN?: any;
+    TX?: any;
+    UT?: any;
+    VA?: any;
+    VT?: any;
+    WA?: any;
+    WI?: any;
+    WV?: any;
+    WY?: any;
+  },
+  ResolversTypes['State']
+>;
 
 export type WeatherDataResolvers<
   ContextType = any,
@@ -434,6 +491,6 @@ export type Resolvers<ContextType = any> = {
   PropertyPageInfo?: PropertyPageInfoResolvers<ContextType>;
   PropertyPaginatedResult?: PropertyPaginatedResultResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
-  State?: GraphQLScalarType;
+  State?: StateResolvers;
   WeatherData?: WeatherDataResolvers<ContextType>;
 };
