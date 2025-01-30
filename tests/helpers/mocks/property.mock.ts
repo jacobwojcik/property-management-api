@@ -1,3 +1,5 @@
+import { Server } from "../../../src/infrastructure/server/server";
+
 export const mockPropertyInput = {
   street: '123 Test St',
   city: 'Test City',
@@ -105,3 +107,14 @@ export const DELETE_PROPERTY = `
     deleteProperty(id: $id)
   }
 `;
+
+
+export const createProperties = async (server: Server ) => {
+  await new Promise((resolve) => setTimeout(resolve, 250));
+  for (const property of mockProperties) {
+    await server.apollo.executeOperation({
+      query: CREATE_PROPERTY,
+      variables: { input: property },
+    });
+  }
+};

@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { State } from '../../../graphql/types';
+import { State } from '../../../graphql/types.js';
 
 export const createPropertySchema = z.object({
   city: z.string().min(1),

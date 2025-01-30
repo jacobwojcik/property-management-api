@@ -62,7 +62,6 @@ export class TestDepsContainer extends AbstractDepsContainer {
       prisma.weatherData.deleteMany(),
       prisma.property.deleteMany(),
     ]);
-    console.log('CLEANUP');
   }
 
   async reset(): Promise<void> {

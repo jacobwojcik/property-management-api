@@ -10,9 +10,8 @@ import { TestDepsContainer } from '../../helpers/test-deps-container';
 import { PropertyPaginatedResult } from '../../../src/graphql/types';
 import { Server } from '../../../src/infrastructure/server/server';
 import {
-  mockProperties,
-  CREATE_PROPERTY,
   GET_PROPERTIES,
+  createProperties,
 } from '../../helpers/mocks/property.mock';
 
 describe('Query Properties Integration Tests', () => {
@@ -24,12 +23,7 @@ describe('Query Properties Integration Tests', () => {
     server = new Server(container);
     await server.initialize();
 
-    for (const property of mockProperties) {
-      await server.apollo.executeOperation({
-        query: CREATE_PROPERTY,
-        variables: { input: property },
-      });
-    }
+    await createProperties(server);
   });
 
   afterAll(async () => {
@@ -39,7 +33,6 @@ describe('Query Properties Integration Tests', () => {
   });
 
   it('should query all properties', async () => {
-    console.log('GET');
     const response = await server.apollo.executeOperation({
       query: GET_PROPERTIES,
     });

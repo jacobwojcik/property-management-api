@@ -19,6 +19,8 @@
     "type-check": "tsc --noEmit",
     "generate": "graphql-codegen",
     "test": "vitest --sequence.concurrent=false",
+    "test:unit": "vitest unit",
+    "test:integration": "vitest integration --sequence.concurrent=false",
     "prisma:generate": "pnpm prisma:generate:dev && pnpm prisma:generate:test",
     "prisma:generate:dev": "prisma generate --schema=prisma/schemas/dev/schema.prisma",
     "prisma:generate:test": "prisma generate --schema=prisma/schemas/test/schema.prisma",

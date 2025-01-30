@@ -23,9 +23,9 @@ export class PropertyRepository implements IPropertyRepository {
     totalCount: number;
   }> {
     const where: Prisma.PropertyWhereInput = {
-      ...(filter?.city != null && { city: filter.city }),
-      ...(filter?.state != null && { state: filter.state }),
-      ...(filter?.zipCode != null && { zipCode: filter.zipCode }),
+      city: filter?.city,
+      state: filter?.state,
+      zipCode: filter?.zipCode,
     };
 
     const [items, totalCount] = await Promise.all([
