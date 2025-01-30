@@ -4,19 +4,20 @@ import { resolve } from 'path';
 import { ApolloServer } from '@apollo/server';
 import { startStandaloneServer } from '@apollo/server/standalone';
 
-import type { Context } from '../../types';
 import type { Configuration } from '../../shared/config/config.js';
-import type { IContainer } from '../deps-manager/container.abstract';
+import type { AbstractContainer } from '../deps-manager/container.abstract';
+import type { BaseContext } from '@apollo/server';
 
 import { createPropertyResolvers } from '../../modules/property/resolvers/property.resolvers.js';
 import { Dependencies } from '../deps-manager/registry.js';
 import { formatError } from '../../utils/formatError.js';
+import { loggingPlugin } from './plugins/logging.plugin.js';
 
 export class Server {
-  private server!: ApolloServer<Context>;
-  private container: IContainer;
+  private server!: ApolloServer;
+  private container: AbstractContainer;
 
-  constructor(container: IContainer) {
+  constructor(container: AbstractContainer) {
     this.container = container;
   }
 
@@ -24,10 +25,11 @@ export class Server {
     const typeDefs = this.loadTypeDefs();
     const resolvers = this.createResolvers();
 
-    this.server = new ApolloServer({
+    this.server = new ApolloServer<BaseContext>({
       typeDefs,
       resolvers,
       formatError,
+      plugins: [loggingPlugin],
     });
   }
 
@@ -63,9 +65,6 @@ export class Server {
     this.initServer();
 
     const { url } = await startStandaloneServer(this.server, {
-      context: async () => {
-        return this.container.get<Context>(Dependencies.Context);
-      },
       listen: {
         port: this.container.get<Configuration>(Dependencies.Config).serverPort,
       },
