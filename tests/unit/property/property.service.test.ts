@@ -7,6 +7,7 @@ import { PropertyRepository } from '../../../src/modules/property/repositories/p
 import { WeatherService } from '../../../src/modules/weather/services/weather.service';
 import { Mocked } from 'vitest';
 import { PropertyNotFoundError } from '../../../src/shared/errors/property.errors.js';
+import { State } from '@prisma/client';
 
 describe('PropertyService', () => {
   let propertyService: PropertyService;
@@ -95,7 +96,7 @@ describe('PropertyService', () => {
       const input = {
         street: '123 Test St',
         city: 'Test City',
-        state: 'NY',
+        state: State.NY,
         zipCode: '12345',
       };
 
@@ -113,7 +114,7 @@ describe('PropertyService', () => {
       const invalidInput = {
         street: '',
         city: '',
-        state: 'NY',
+        state: State.NY,
         zipCode: '123',
       };
 

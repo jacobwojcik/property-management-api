@@ -61,8 +61,7 @@ export class Server {
   }
 
   async listen(): Promise<string> {
-    await this.container.init();
-    this.initServer();
+    await this.initialize();
 
     const { url } = await startStandaloneServer(this.server, {
       listen: {

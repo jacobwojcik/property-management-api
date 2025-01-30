@@ -1,3 +1,4 @@
+import { State } from "@prisma/client";
 import { Server } from "../../../src/infrastructure/server/server";
 
 export const mockPropertyInput = {
@@ -32,7 +33,7 @@ export const mockProperty = {
   id: '1',
   street: '123 Test St',
   city: 'Test City',
-  state: 'NY',
+  state: State.NY,
   zipCode: '12345',
   lat: 40.7128,
   long: -74.006,
