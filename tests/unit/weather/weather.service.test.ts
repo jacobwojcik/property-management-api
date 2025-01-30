@@ -2,7 +2,10 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { WeatherService } from '../../../src/modules/weather/services/weather.service';
 import { WeatherError } from '../../../src/shared/errors/weather.error';
 import { mockWeatherData } from '../../helpers/mocks/weather.mock';
-import { createMockWeatherApi, createMockWeatherResponse } from '../../helpers/mocks/weather.mock';
+import {
+  createMockWeatherApi,
+  createMockWeatherResponse,
+} from '../../helpers/mocks/weather.mock';
 
 describe('WeatherService', () => {
   let weatherService: WeatherService;
@@ -11,7 +14,7 @@ describe('WeatherService', () => {
   beforeEach(() => {
     mockWeatherApi = createMockWeatherApi();
     weatherService = new WeatherService(mockWeatherApi);
-    
+
     vi.resetModules();
     vi.stubGlobal('fetch', vi.fn());
   });
@@ -40,22 +43,26 @@ describe('WeatherService', () => {
         status: 500,
       });
 
-      await expect(weatherService.getWeatherData(mockAddress))
-        .rejects.toThrow(WeatherError);
+      await expect(weatherService.getWeatherData(mockAddress)).rejects.toThrow(
+        WeatherError
+      );
     });
 
     it('should throw WeatherError when API returns error response', async () => {
-      global.fetch = vi.fn().mockResolvedValue(createMockWeatherResponse({
-        success: false,
-        error: {
-          code: 101,
-          type: 'invalid_access_key',
-          info: 'Invalid API key',
-        }
-      }));
+      global.fetch = vi.fn().mockResolvedValue(
+        createMockWeatherResponse({
+          success: false,
+          error: {
+            code: 101,
+            type: 'invalid_access_key',
+            info: 'Invalid API key',
+          },
+        })
+      );
 
-      await expect(weatherService.getWeatherData(mockAddress))
-        .rejects.toThrow(WeatherError);
+      await expect(weatherService.getWeatherData(mockAddress)).rejects.toThrow(
+        WeatherError
+      );
     });
 
     it('should throw WeatherError when response format is invalid', async () => {
@@ -64,8 +71,9 @@ describe('WeatherService', () => {
         json: () => Promise.resolve({}),
       });
 
-      await expect(weatherService.getWeatherData(mockAddress))
-        .rejects.toThrow(WeatherError);
+      await expect(weatherService.getWeatherData(mockAddress)).rejects.toThrow(
+        WeatherError
+      );
     });
   });
-}); 
+});

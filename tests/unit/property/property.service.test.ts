@@ -6,12 +6,12 @@ import { mockWeatherData } from '../../helpers/mocks/weather.mock';
 import { PropertyRepository } from '../../../src/modules/property/repositories/property.repository';
 import { WeatherService } from '../../../src/modules/weather/services/weather.service';
 import { Mocked } from 'vitest';
+import { PropertyNotFoundError } from '../../../src/shared/errors/property.errors.js';
 
 describe('PropertyService', () => {
   let propertyService: PropertyService;
-  let mockPropertyRepository: Mocked<PropertyRepository>
+  let mockPropertyRepository: Mocked<PropertyRepository>;
   let mockWeatherService: Mocked<WeatherService>;
-
 
   beforeEach(() => {
     mockPropertyRepository = {
@@ -24,7 +24,7 @@ describe('PropertyService', () => {
     mockWeatherService = {
       getWeatherData: vi.fn(),
     } as unknown as Mocked<WeatherService>;
-    
+
     mockWeatherService.getWeatherData = vi.fn();
 
     propertyService = new PropertyService(
@@ -42,11 +42,9 @@ describe('PropertyService', () => {
           hasNextPage: false,
           hasPreviousPage: false,
           currentPage: 1,
-          totalPages: 1
-        }
+          totalPages: 1,
+        },
       };
-
-      console.log(mockResponse);
 
       mockPropertyRepository.findMany.mockResolvedValue(mockResponse);
 
@@ -73,7 +71,7 @@ describe('PropertyService', () => {
           hasNextPage: false,
           hasPreviousPage: false,
           currentPage: 1,
-          totalPages: 1
+          totalPages: 1,
         },
         totalCount: 1,
       });
@@ -116,12 +114,12 @@ describe('PropertyService', () => {
         street: '',
         city: '',
         state: 'NY',
-        zipCode: '123', 
+        zipCode: '123',
       };
 
-      await expect(propertyService.createProperty(invalidInput)).rejects.toThrow(
-        ValidationError
-      );
+      await expect(
+        propertyService.createProperty(invalidInput)
+      ).rejects.toThrow(ValidationError);
     });
   });
 
@@ -135,31 +133,47 @@ describe('PropertyService', () => {
       expect(mockPropertyRepository.findById).toHaveBeenCalledWith('1');
     });
 
-    it('should return null for non-existent property', async () => {
+    it('should throw PropertyNotFoundError for non-existent property', async () => {
       mockPropertyRepository.findById.mockResolvedValue(null);
 
-      const result = await propertyService.getProperty('999');
-
-      expect(result).toBeNull();
+      await expect(propertyService.getProperty('999')).rejects.toThrow(
+        PropertyNotFoundError
+      );
+      expect(mockPropertyRepository.findById).toHaveBeenCalledWith('999');
     });
   });
 
   describe('deleteProperty', () => {
     it('should delete property successfully', async () => {
+      mockPropertyRepository.findById.mockResolvedValue(mockProperty);
       mockPropertyRepository.delete.mockResolvedValue(true);
 
       const result = await propertyService.deleteProperty('1');
 
       expect(result).toBe(true);
+      expect(mockPropertyRepository.findById).toHaveBeenCalledWith('1');
       expect(mockPropertyRepository.delete).toHaveBeenCalledWith('1');
     });
 
     it('should return false when property deletion fails', async () => {
+      mockPropertyRepository.findById.mockResolvedValue(mockProperty);
       mockPropertyRepository.delete.mockResolvedValue(false);
 
       const result = await propertyService.deleteProperty('999');
 
       expect(result).toBe(false);
+      expect(mockPropertyRepository.findById).toHaveBeenCalledWith('999');
+      expect(mockPropertyRepository.delete).toHaveBeenCalledWith('999');
+    });
+
+    it('should throw PropertyNotFoundError when trying to delete non-existent property', async () => {
+      mockPropertyRepository.findById.mockResolvedValue(null);
+
+      await expect(propertyService.deleteProperty('999')).rejects.toThrow(
+        PropertyNotFoundError
+      );
+      expect(mockPropertyRepository.findById).toHaveBeenCalledWith('999');
+      expect(mockPropertyRepository.delete).not.toHaveBeenCalled();
     });
   });
-}); 
+});

@@ -38,8 +38,6 @@ export const mockProperty = {
   updatedAt: new Date(),
 };
 
-
-
 export const CREATE_PROPERTY = `
   mutation CreateProperty($input: CreatePropertyInput!) {
     createProperty(input: $input) {
@@ -106,4 +104,4 @@ export const DELETE_PROPERTY = `
   mutation DeleteProperty($id: ID!) {
     deleteProperty(id: $id)
   }
-`; 
+`;

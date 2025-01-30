@@ -1,15 +1,27 @@
-import { describe, it, expect, afterAll, beforeAll, assert } from 'vitest';
-import { TestContainer } from '../../helpers/test-container';
-import { Property } from '../../../src/graphql/graphql';
+import {
+  describe,
+  it,
+  expect,
+  afterAll,
+  beforeAll,
+  assert,
+} from 'vitest';
+import { TestDepsContainer } from '../../helpers/test-deps-container';
+import { Property } from '../../../src/graphql/types';
 import { Server } from '../../../src/infrastructure/server/server';
-import { mockPropertyInput, CREATE_PROPERTY, GET_PROPERTY } from '../../helpers/mocks/property.mock';
+import {
+  mockPropertyInput,
+  CREATE_PROPERTY,
+  GET_PROPERTY,
+  DELETE_PROPERTY,
+} from '../../helpers/mocks/property.mock';
 
 describe('Create Property Integration Tests', () => {
-  let container: TestContainer;
+  let container: TestDepsContainer;
   let server: Server;
 
   beforeAll(async () => {
-    container = TestContainer.getTestInstance();
+    container = TestDepsContainer.getTestInstance();
     server = new Server(container);
     await server.initialize();
   });
@@ -18,7 +30,6 @@ describe('Create Property Integration Tests', () => {
     await container.disconnect();
     await server.shutdown();
   });
-
 
   it('should create and retrieve a property with weather data', async () => {
     const createResponse = await server.apollo.executeOperation({
@@ -29,7 +40,8 @@ describe('Create Property Integration Tests', () => {
     expect(createResponse.body.kind).toBe('single');
     assert(createResponse.body.kind === 'single');
 
-    const created = createResponse.body.singleResult?.data?.createProperty as Property;
+    const created = createResponse.body.singleResult?.data
+      ?.createProperty as Property;
 
     expect(created).toBeDefined();
     expect(created.street).toBe(mockPropertyInput.street);
@@ -44,8 +56,9 @@ describe('Create Property Integration Tests', () => {
 
     expect(getResponse.body.kind).toBe('single');
     assert(getResponse.body.kind === 'single');
-    
-    const retrieved = getResponse.body.singleResult?.data?.getProperty as Property;
+
+    const retrieved = getResponse.body.singleResult?.data
+      ?.getProperty as Property;
 
     expect(retrieved).toBeDefined();
     expect(retrieved.id).toBe(created.id);
@@ -54,5 +67,12 @@ describe('Create Property Integration Tests', () => {
     expect(retrieved.state).toBe(mockPropertyInput.state);
     expect(retrieved.zipCode).toBe(mockPropertyInput.zipCode);
     expect(retrieved.weatherData?.temperature).toBeDefined();
+
+    const deleteResponse = await server.apollo.executeOperation({
+      query: DELETE_PROPERTY,
+      variables: { id: created.id },
+    });
+
+    expect(deleteResponse.body.kind).toBe('single');
   });
-}); 
+});

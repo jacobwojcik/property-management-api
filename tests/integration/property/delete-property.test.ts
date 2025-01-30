@@ -1,15 +1,20 @@
 import { describe, it, expect, afterAll, beforeAll, assert } from 'vitest';
-import { TestContainer } from '../../helpers/test-container';
-import { Property } from '../../../src/graphql/graphql';
+import { TestDepsContainer } from '../../helpers/test-deps-container';
+import { Property } from '../../../src/graphql/types';
 import { Server } from '../../../src/infrastructure/server/server';
-import { mockPropertyInput, CREATE_PROPERTY, DELETE_PROPERTY, GET_PROPERTY } from '../../helpers/mocks/property.mock'
+import {
+  mockPropertyInput,
+  CREATE_PROPERTY,
+  DELETE_PROPERTY,
+  GET_PROPERTY,
+} from '../../helpers/mocks/property.mock';
 
 describe('Delete Property Integration Tests', () => {
-  let container: TestContainer;
+  let container: TestDepsContainer;
   let server: Server;
 
   beforeAll(async () => {
-    container = TestContainer.getTestInstance();
+    container = TestDepsContainer.getTestInstance();
     server = new Server(container);
     await server.initialize();
   });
@@ -27,8 +32,8 @@ describe('Delete Property Integration Tests', () => {
 
     expect(createResponse.body.kind).toBe('single');
     assert(createResponse.body.kind === 'single');
-    const created = createResponse.body.singleResult?.data?.createProperty as Property;
-
+    const created = createResponse.body.singleResult?.data
+      ?.createProperty as Property;
 
     const deleteResponse = await server.apollo.executeOperation({
       query: DELETE_PROPERTY,
@@ -48,4 +53,17 @@ describe('Delete Property Integration Tests', () => {
     assert(getResponse.body.kind === 'single');
     expect(getResponse.body.singleResult?.data?.getProperty).toBe(null);
   });
-}); 
+
+  it('should return error when deleting non-existent property', async () => {
+    const deleteResponse = await server.apollo.executeOperation({
+      query: DELETE_PROPERTY,
+      variables: { id: 'non-existent-id' },
+    });
+
+    expect(deleteResponse.body.kind).toBe('single');
+    assert(deleteResponse.body.kind === 'single');
+    expect(deleteResponse.body.singleResult?.errors?.[0].extensions?.code).toBe(
+      'NOT_FOUND'
+    );
+  });
+});

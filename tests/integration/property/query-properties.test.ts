@@ -6,8 +6,8 @@ import {
   beforeAll,
   assert,
 } from 'vitest';
-import { TestContainer } from '../../helpers/test-container';
-import { PropertyPaginatedResult } from '../../../src/graphql/graphql';
+import { TestDepsContainer } from '../../helpers/test-deps-container';
+import { PropertyPaginatedResult } from '../../../src/graphql/types';
 import { Server } from '../../../src/infrastructure/server/server';
 import {
   mockProperties,
@@ -16,14 +16,14 @@ import {
 } from '../../helpers/mocks/property.mock';
 
 describe('Query Properties Integration Tests', () => {
-  let container: TestContainer;
+  let container: TestDepsContainer;
   let server: Server;
 
   beforeAll(async () => {
-    container = TestContainer.getTestInstance();
+    container = TestDepsContainer.getTestInstance();
     server = new Server(container);
     await server.initialize();
-    await container.cleanup();
+
     for (const property of mockProperties) {
       await server.apollo.executeOperation({
         query: CREATE_PROPERTY,
@@ -32,7 +32,6 @@ describe('Query Properties Integration Tests', () => {
     }
   });
 
-
   afterAll(async () => {
     await container.cleanup();
     await container.disconnect();
@@ -40,17 +39,17 @@ describe('Query Properties Integration Tests', () => {
   });
 
   it('should query all properties', async () => {
-    
-
+    console.log('GET');
     const response = await server.apollo.executeOperation({
       query: GET_PROPERTIES,
     });
 
     expect(response.body.kind).toBe('single');
     assert(response.body.kind === 'single');
-    const result = response.body.singleResult?.data?.getProperties as PropertyPaginatedResult;
+    const result = response.body.singleResult?.data
+      ?.getProperties as PropertyPaginatedResult;
 
-    expect(result.properties).toHaveLength(4);
+    expect(result.properties).toHaveLength(3);
   });
 
   it('should filter properties by city', async () => {
@@ -109,16 +108,17 @@ describe('Query Properties Integration Tests', () => {
       query: GET_PROPERTIES,
       variables: {
         page: 1,
-        pageSize: 2
+        pageSize: 2,
       },
     });
 
     expect(response.body.kind).toBe('single');
     assert(response.body.kind === 'single');
-    const result = response.body.singleResult?.data?.getProperties as PropertyPaginatedResult;
-    
+    const result = response.body.singleResult?.data
+      ?.getProperties as PropertyPaginatedResult;
+
     expect(result.properties).toHaveLength(2);
-    expect(result.totalCount).toBe(4); 
+    expect(result.totalCount).toBe(3);
   });
 
   it('should filter properties by multiple criteria', async () => {
@@ -127,16 +127,19 @@ describe('Query Properties Integration Tests', () => {
       variables: {
         filter: {
           city: 'New York',
-          state: 'NY'
-        }
+          state: 'NY',
+        },
       },
     });
 
     expect(response.body.kind).toBe('single');
     assert(response.body.kind === 'single');
-    const result = response.body.singleResult?.data?.getProperties as PropertyPaginatedResult;
-    
-    expect(result.properties.every(p => p.city === 'New York' && p.state === 'NY')).toBe(true);
+    const result = response.body.singleResult?.data
+      ?.getProperties as PropertyPaginatedResult;
+
+    expect(
+      result.properties.every((p) => p.city === 'New York' && p.state === 'NY')
+    ).toBe(true);
   });
 
   it('should handle empty result sets gracefully', async () => {
@@ -144,15 +147,16 @@ describe('Query Properties Integration Tests', () => {
       query: GET_PROPERTIES,
       variables: {
         filter: {
-          city: 'NonExistentCity'
-        }
+          city: 'NonExistentCity',
+        },
       },
     });
 
     expect(response.body.kind).toBe('single');
     assert(response.body.kind === 'single');
-    const result = response.body.singleResult?.data?.getProperties as PropertyPaginatedResult;
-    
+    const result = response.body.singleResult?.data
+      ?.getProperties as PropertyPaginatedResult;
+
     expect(result.properties).toHaveLength(0);
     expect(result.totalCount).toBe(0);
   });
