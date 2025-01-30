@@ -4,9 +4,11 @@
   "main": "index.js",
   "scripts": {
     "compile": "tsc",
-    "start": "pnpm run compile && node ./dist/index.js",
+    "db:prepare": "pnpm prisma:generate && pnpm db:migrate",
+    "start": "pnpm compile && node ./dist/index.js",
     "dev": "tsc --watch & node --watch ./dist/index.js",
-    "db:migrate": "prisma migrate dev --schema=prisma/schemas/dev/schema.prisma",
+    "db:migrate": "pnpm db:migrate:dev && pnpm db:migrate:test",
+    "db:migrate:dev": "prisma migrate dev --schema=prisma/schemas/dev/schema.prisma",
     "db:migrate:test": "prisma migrate dev --schema=prisma/schemas/test/schema.prisma",
     "db:studio": "prisma studio --schema=prisma/schemas/dev/schema.prisma",
     "db:studio:test": "prisma studio --schema=prisma/schemas/test/schema.prisma",
@@ -17,7 +19,8 @@
     "type-check": "tsc --noEmit",
     "generate": "graphql-codegen",
     "test": "vitest --sequence.concurrent=false",
-    "prisma:generate": "prisma generate --schema=prisma/schemas/dev/schema.prisma",
+    "prisma:generate": "pnpm prisma:generate:dev && pnpm prisma:generate:test",
+    "prisma:generate:dev": "prisma generate --schema=prisma/schemas/dev/schema.prisma",
     "prisma:generate:test": "prisma generate --schema=prisma/schemas/test/schema.prisma",
     "ci": "pnpm type-check && pnpm lint && pnpm test"
   },
