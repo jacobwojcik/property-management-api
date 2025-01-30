@@ -16,14 +16,14 @@ export class Registry {
     Registry.instance = new Registry();
   }
 
-  register<T>(token: symbol, implementation: T): void {
-    this.containers.set(token, implementation);
+  register<T>(deps: symbol, implementation: T): void {
+    this.containers.set(deps, implementation);
   }
 
-  get<T>(token: symbol): T {
-    const implementation = this.containers.get(token);
+  get<T>(deps: symbol): T {
+    const implementation = this.containers.get(deps);
     if (!implementation) {
-      throw new Error(`No implementation found for token: ${token.toString()}`);
+      throw new Error(`No implementation found for deps: ${deps.toString()}`);
     }
 
     return implementation as T;

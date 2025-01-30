@@ -1,63 +1,52 @@
-import { PrismaClient } from '@prisma/client';
-import { Registry, Dependencies } from '../../src/infrastructure/deps-manager/registry';
+import { AbstractDepsContainer } from '../../src/infrastructure/deps-manager/deps-container.abstract';
+import {
+  Registry,
+  Dependencies,
+} from '../../src/infrastructure/deps-manager/registry';
 import { Configuration } from '../../src/shared/config/config';
 import { PropertyRepository } from '../../src/modules/property/repositories/property.repository';
 import { WeatherService } from '../../src/modules/weather/services/weather.service';
 import { PropertyService } from '../../src/modules/property/services/property.service';
-import  { AbstractContainer } from '../../src/infrastructure/deps-manager/container.abstract';
 import { mockWeatherData } from './mocks/weather.mock';
+import { PrismaClient } from '@prisma/client';
 
-export class TestContainer extends AbstractContainer {
-  private static testInstance: TestContainer;
-  protected registry: Registry;
+export class TestDepsContainer extends AbstractDepsContainer {
+  private static testInstance: TestDepsContainer;
 
-  private constructor() {
-    super();
-    this.registry = Registry.getInstance();
-  }
-
-  static getTestInstance(): TestContainer {
-    if (!TestContainer.testInstance) {
-      TestContainer.testInstance = new TestContainer();
+  static getTestInstance(): TestDepsContainer {
+    if (!TestDepsContainer.testInstance) {
+      TestDepsContainer.testInstance = new TestDepsContainer();
     }
-    return TestContainer.testInstance;
-  }
-
-  get<T>(token: symbol): T {
-    return this.registry.get<T>(token);
+    return TestDepsContainer.testInstance;
   }
 
   async init(): Promise<void> {
     const config = new Configuration();
 
     if (!config.isTest()) {
-      throw new Error('TestContainer must be initialized with NODE_ENV=test');
+      throw new Error(
+        'TestDepsContainer must be initialized with NODE_ENV=test'
+      );
     }
 
-    const prisma = new PrismaClient({
-      datasources: {
-        db: {
-          url: config.databaseUrl,
-        },
-      },
-    });
-    await prisma.$connect();
+    const prisma = await this.initializeDatabase(config);
 
-    this.registry.register(Dependencies.PrismaClient, prisma);
-    this.registry.register(Dependencies.Config, config);
-    this.registry.register(Dependencies.Context, { prisma });
+    this.registerBaseDependencies(prisma, config);
+    this.registerTestServices(prisma);
+  }
 
+  private registerTestServices(prisma: PrismaClient): void {
     this.registry.register(
       Dependencies.PropertyRepository,
       new PropertyRepository(prisma)
     );
 
     const mockWeatherService: WeatherService = {
-      getWeatherData: async () => mockWeatherData
+      getWeatherData: async () => mockWeatherData,
     } as unknown as WeatherService;
-    
+
     this.registry.register(Dependencies.WeatherService, mockWeatherService);
-    
+
     this.registry.register(
       Dependencies.PropertyService,
       new PropertyService(
@@ -69,11 +58,11 @@ export class TestContainer extends AbstractContainer {
 
   async cleanup(): Promise<void> {
     const prisma = this.get<PrismaClient>(Dependencies.PrismaClient);
-    
     await prisma.$transaction([
       prisma.weatherData.deleteMany(),
       prisma.property.deleteMany(),
     ]);
+    console.log('CLEANUP');
   }
 
   async reset(): Promise<void> {
@@ -81,9 +70,4 @@ export class TestContainer extends AbstractContainer {
     this.registry = Registry.getInstance();
     await this.init();
   }
-
-  async disconnect(): Promise<void> {
-    const prisma = this.get<PrismaClient>(Dependencies.PrismaClient);
-    await prisma.$disconnect();
-  }
-} 
+}

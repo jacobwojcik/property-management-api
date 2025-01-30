@@ -5,7 +5,7 @@ import { ApolloServer } from '@apollo/server';
 import { startStandaloneServer } from '@apollo/server/standalone';
 
 import type { Configuration } from '../../shared/config/config.js';
-import type { AbstractContainer } from '../deps-manager/container.abstract';
+import type { AbstractDepsContainer } from '../deps-manager/deps-container.abstract.js';
 import type { BaseContext } from '@apollo/server';
 
 import { createPropertyResolvers } from '../../modules/property/resolvers/property.resolvers.js';
@@ -15,9 +15,9 @@ import { loggingPlugin } from './plugins/logging.plugin.js';
 
 export class Server {
   private server!: ApolloServer;
-  private container: AbstractContainer;
+  private container: AbstractDepsContainer;
 
-  constructor(container: AbstractContainer) {
+  constructor(container: AbstractDepsContainer) {
     this.container = container;
   }
 
