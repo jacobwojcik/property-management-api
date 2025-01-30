@@ -27,7 +27,7 @@ A GraphQL API for managing properties with real-time weather data integration. B
 
 ## Architecture
 
-- Clean Architecture pattern
+- Modular architecture
 - Dependency Injection
 - Repository pattern for data access
 - Service layer for business logic
@@ -160,6 +160,10 @@ The API provides the following main types:
   - `createProperty`: Create a new property
   - `updateProperty`: Update an existing property
   - `deleteProperty`: Delete a property
+
+## Continuous Integration
+
+This project uses GitHub Actions for Continuous Integration (CI) to automate testing. The CI pipeline is triggered on every push and pull request to the `main` branch.
 
 ## License
 
