@@ -1,6 +1,7 @@
-import type { PrismaClient, Property, Prisma } from '@prisma/client';
+import type { PrismaClient, Prisma } from '@prisma/client';
 import type { PropertyFilter } from '../schema/property.schema';
 import type { IPropertyRepository } from './property.repository.interface';
+import type { Property } from '../../../graphql/graphql';
 
 export class PropertyRepository implements IPropertyRepository {
   constructor(private prisma: PrismaClient) {}

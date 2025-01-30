@@ -1,10 +1,12 @@
 import type { Resolvers } from '../../../graphql/graphql';
-import type { IContainer } from '../../../infrastructure/deps-manager/container.abstract.js';
+import type { AbstractContainer } from '../../../infrastructure/deps-manager/container.abstract.js';
 import type { PropertyService } from '../services/property.service.js';
 
 import { Dependencies } from '../../../infrastructure/deps-manager/registry.js';
 
-export const createPropertyResolvers = (container: IContainer): Resolvers => {
+export const createPropertyResolvers = (
+  container: AbstractContainer
+): Resolvers => {
   const propertyService = container.get<PropertyService>(
     Dependencies.PropertyService
   );

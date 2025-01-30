@@ -1,9 +1,13 @@
+/* eslint-disable-next-line */
+/* eslint-disable */
+// @generated
+// This file was automatically generated and should not be edited.
+
 import {
   GraphQLResolveInfo,
   GraphQLScalarType,
   GraphQLScalarTypeConfig,
 } from 'graphql';
-import { PrismaProperty, PrismaWeatherData, Context } from '../types';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = {
@@ -24,7 +28,6 @@ export type Incremental<T> =
   | {
       [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never;
     };
-export type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 export type RequireFields<T, K extends keyof T> = Omit<T, K> & {
   [P in K]-?: NonNullable<T[P]>;
 };
@@ -36,11 +39,12 @@ export type Scalars = {
   Int: { input: number; output: number };
   Float: { input: number; output: number };
   DateTime: { input: Date; output: Date };
+  State: { input: any; output: any };
 };
 
 export type CreatePropertyInput = {
   city: Scalars['String']['input'];
-  state: State;
+  state: Scalars['State']['input'];
   street: Scalars['String']['input'];
   zipCode: Scalars['String']['input'];
 };
@@ -66,7 +70,7 @@ export type Property = {
   id: Scalars['ID']['output'];
   lat: Scalars['Float']['output'];
   long: Scalars['Float']['output'];
-  state: State;
+  state: Scalars['State']['output'];
   street: Scalars['String']['output'];
   updatedAt: Scalars['DateTime']['output'];
   weatherData?: Maybe<WeatherData>;
@@ -75,7 +79,7 @@ export type Property = {
 
 export type PropertyFilter = {
   city?: InputMaybe<Scalars['String']['input']>;
-  state?: InputMaybe<State>;
+  state?: InputMaybe<Scalars['State']['input']>;
   zipCode?: InputMaybe<Scalars['String']['input']>;
 };
 
@@ -119,61 +123,6 @@ export type QueryGetPropertyArgs = {
 export enum SortOrder {
   Asc = 'ASC',
   Desc = 'DESC',
-}
-
-export enum State {
-  Ak = 'AK',
-  Al = 'AL',
-  Ar = 'AR',
-  Az = 'AZ',
-  Ca = 'CA',
-  Co = 'CO',
-  Ct = 'CT',
-  Dc = 'DC',
-  De = 'DE',
-  Fl = 'FL',
-  Ga = 'GA',
-  Hi = 'HI',
-  Ia = 'IA',
-  Id = 'ID',
-  Il = 'IL',
-  In = 'IN',
-  Ks = 'KS',
-  Ky = 'KY',
-  La = 'LA',
-  Ma = 'MA',
-  Md = 'MD',
-  Me = 'ME',
-  Mi = 'MI',
-  Mn = 'MN',
-  Mo = 'MO',
-  Ms = 'MS',
-  Mt = 'MT',
-  Nc = 'NC',
-  Nd = 'ND',
-  Ne = 'NE',
-  Nh = 'NH',
-  Nj = 'NJ',
-  Nm = 'NM',
-  Nv = 'NV',
-  Ny = 'NY',
-  Oh = 'OH',
-  Ok = 'OK',
-  Or = 'OR',
-  Pa = 'PA',
-  Pr = 'PR',
-  Ri = 'RI',
-  Sc = 'SC',
-  Sd = 'SD',
-  Tn = 'TN',
-  Tx = 'TX',
-  Ut = 'UT',
-  Va = 'VA',
-  Vt = 'VT',
-  Wa = 'WA',
-  Wi = 'WI',
-  Wv = 'WV',
-  Wy = 'WY',
 }
 
 export type WeatherData = {
@@ -312,20 +261,16 @@ export type ResolversTypes = {
   ID: ResolverTypeWrapper<Scalars['ID']['output']>;
   Int: ResolverTypeWrapper<Scalars['Int']['output']>;
   Mutation: ResolverTypeWrapper<{}>;
-  Property: ResolverTypeWrapper<PrismaProperty>;
+  Property: ResolverTypeWrapper<Property>;
   PropertyFilter: PropertyFilter;
   PropertyPageInfo: ResolverTypeWrapper<PropertyPageInfo>;
-  PropertyPaginatedResult: ResolverTypeWrapper<
-    Omit<PropertyPaginatedResult, 'properties'> & {
-      properties: Array<ResolversTypes['Property']>;
-    }
-  >;
+  PropertyPaginatedResult: ResolverTypeWrapper<PropertyPaginatedResult>;
   PropertySortField: PropertySortField;
   Query: ResolverTypeWrapper<{}>;
   SortOrder: SortOrder;
-  State: State;
+  State: ResolverTypeWrapper<Scalars['State']['output']>;
   String: ResolverTypeWrapper<Scalars['String']['output']>;
-  WeatherData: ResolverTypeWrapper<PrismaWeatherData>;
+  WeatherData: ResolverTypeWrapper<WeatherData>;
 };
 
 /** Mapping between all available schema types and the resolvers parents */
@@ -337,15 +282,14 @@ export type ResolversParentTypes = {
   ID: Scalars['ID']['output'];
   Int: Scalars['Int']['output'];
   Mutation: {};
-  Property: PrismaProperty;
+  Property: Property;
   PropertyFilter: PropertyFilter;
   PropertyPageInfo: PropertyPageInfo;
-  PropertyPaginatedResult: Omit<PropertyPaginatedResult, 'properties'> & {
-    properties: Array<ResolversParentTypes['Property']>;
-  };
+  PropertyPaginatedResult: PropertyPaginatedResult;
   Query: {};
+  State: Scalars['State']['output'];
   String: Scalars['String']['output'];
-  WeatherData: PrismaWeatherData;
+  WeatherData: WeatherData;
 };
 
 export interface DateTimeScalarConfig
@@ -354,7 +298,7 @@ export interface DateTimeScalarConfig
 }
 
 export type MutationResolvers<
-  ContextType = Context,
+  ContextType = any,
   ParentType extends
     ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation'],
 > = {
@@ -373,7 +317,7 @@ export type MutationResolvers<
 };
 
 export type PropertyResolvers<
-  ContextType = Context,
+  ContextType = any,
   ParentType extends
     ResolversParentTypes['Property'] = ResolversParentTypes['Property'],
 > = {
@@ -395,7 +339,7 @@ export type PropertyResolvers<
 };
 
 export type PropertyPageInfoResolvers<
-  ContextType = Context,
+  ContextType = any,
   ParentType extends
     ResolversParentTypes['PropertyPageInfo'] = ResolversParentTypes['PropertyPageInfo'],
 > = {
@@ -411,7 +355,7 @@ export type PropertyPageInfoResolvers<
 };
 
 export type PropertyPaginatedResultResolvers<
-  ContextType = Context,
+  ContextType = any,
   ParentType extends
     ResolversParentTypes['PropertyPaginatedResult'] = ResolversParentTypes['PropertyPaginatedResult'],
 > = {
@@ -430,7 +374,7 @@ export type PropertyPaginatedResultResolvers<
 };
 
 export type QueryResolvers<
-  ContextType = Context,
+  ContextType = any,
   ParentType extends
     ResolversParentTypes['Query'] = ResolversParentTypes['Query'],
 > = {
@@ -448,8 +392,13 @@ export type QueryResolvers<
   >;
 };
 
+export interface StateScalarConfig
+  extends GraphQLScalarTypeConfig<ResolversTypes['State'], any> {
+  name: 'State';
+}
+
 export type WeatherDataResolvers<
-  ContextType = Context,
+  ContextType = any,
   ParentType extends
     ResolversParentTypes['WeatherData'] = ResolversParentTypes['WeatherData'],
 > = {
@@ -478,12 +427,13 @@ export type WeatherDataResolvers<
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type Resolvers<ContextType = Context> = {
+export type Resolvers<ContextType = any> = {
   DateTime?: GraphQLScalarType;
   Mutation?: MutationResolvers<ContextType>;
   Property?: PropertyResolvers<ContextType>;
   PropertyPageInfo?: PropertyPageInfoResolvers<ContextType>;
   PropertyPaginatedResult?: PropertyPaginatedResultResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
+  State?: GraphQLScalarType;
   WeatherData?: WeatherDataResolvers<ContextType>;
 };

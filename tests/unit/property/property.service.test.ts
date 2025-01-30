@@ -1,17 +1,16 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { PropertyService } from '../../../src/modules/property/services/property.service';
 import { ValidationError } from '../../../src/shared/errors/base.error';
-import { State } from '../../../src/graphql/graphql';
 import { mockProperty } from '../../helpers/mocks/property.mock';
 import { mockWeatherData } from '../../helpers/mocks/weather.mock';
 import { PropertyRepository } from '../../../src/modules/property/repositories/property.repository';
 import { WeatherService } from '../../../src/modules/weather/services/weather.service';
-import { PrismaClient } from '@prisma/client';
+import { Mocked } from 'vitest';
 
 describe('PropertyService', () => {
   let propertyService: PropertyService;
-  let mockPropertyRepository: Omit<PropertyRepository, 'prisma'>;
-  let mockWeatherService: WeatherService;
+  let mockPropertyRepository: Mocked<PropertyRepository>
+  let mockWeatherService: Mocked<WeatherService>;
 
 
   beforeEach(() => {
@@ -20,12 +19,12 @@ describe('PropertyService', () => {
       findById: vi.fn(),
       create: vi.fn(),
       delete: vi.fn(),
-    };
+    } as unknown as Mocked<PropertyRepository>;
 
-    mockWeatherService = new WeatherService({
-      apiKey: 'test-api-key',
-      baseUrl: 'test-url'
-    });
+    mockWeatherService = {
+      getWeatherData: vi.fn(),
+    } as unknown as Mocked<WeatherService>;
+    
     mockWeatherService.getWeatherData = vi.fn();
 
     propertyService = new PropertyService(
@@ -39,7 +38,15 @@ describe('PropertyService', () => {
       const mockResponse = {
         properties: [mockProperty],
         totalCount: 1,
+        pageInfo: {
+          hasNextPage: false,
+          hasPreviousPage: false,
+          currentPage: 1,
+          totalPages: 1
+        }
       };
+
+      console.log(mockResponse);
 
       mockPropertyRepository.findMany.mockResolvedValue(mockResponse);
 
@@ -59,10 +66,15 @@ describe('PropertyService', () => {
         10
       );
     });
-
     it('should apply filters correctly', async () => {
       mockPropertyRepository.findMany.mockResolvedValue({
         properties: [mockProperty],
+        pageInfo: {
+          hasNextPage: false,
+          hasPreviousPage: false,
+          currentPage: 1,
+          totalPages: 1
+        },
         totalCount: 1,
       });
 
@@ -85,7 +97,7 @@ describe('PropertyService', () => {
       const input = {
         street: '123 Test St',
         city: 'Test City',
-        state: State.Ny,
+        state: 'NY',
         zipCode: '12345',
       };
 
@@ -103,7 +115,7 @@ describe('PropertyService', () => {
       const invalidInput = {
         street: '',
         city: '',
-        state: State.Ny,
+        state: 'NY',
         zipCode: '123', 
       };
 

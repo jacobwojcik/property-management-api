@@ -1,6 +1,9 @@
-import type { WeatherData } from '@prisma/client';
+import type { WeatherData } from '../../../graphql/graphql';
 
-import { WeatherError } from '../../../shared/errors/weather.error.js';
+import {
+  WeatherError,
+  WeatherErrorType,
+} from '../../../shared/errors/weather.error.js';
 
 interface WeatherStackResponse {
   current: {
@@ -41,6 +44,7 @@ export class WeatherService {
   constructor(private config: IWeatherStackConfig) {
     if (!config.apiKey || !config.baseUrl) {
       throw new WeatherError(
+        WeatherErrorType.CONFIGURATION_ERROR,
         'WeatherStack configuration is missing required values'
       );
     }
@@ -59,6 +63,7 @@ export class WeatherService {
 
       if (!response.ok) {
         throw new WeatherError(
+          WeatherErrorType.API_ERROR,
           `Weather API request failed with status: ${response.status}`
         );
       }
@@ -67,12 +72,16 @@ export class WeatherService {
 
       if (!data.success && data.error) {
         throw new WeatherError(
+          WeatherErrorType.API_ERROR,
           `Weather API error: ${data.error.info} (Code: ${data.error.code})`
         );
       }
 
       if (!data.current || !data.location) {
-        throw new WeatherError('Invalid weather data response format');
+        throw new WeatherError(
+          WeatherErrorType.INVALID_RESPONSE,
+          'Invalid weather data response format'
+        );
       }
 
       return {
@@ -103,6 +112,7 @@ export class WeatherService {
         throw error;
       }
       throw new WeatherError(
+        WeatherErrorType.API_ERROR,
         `Failed to fetch weather data: ${(error as Error).message}`
       );
     }

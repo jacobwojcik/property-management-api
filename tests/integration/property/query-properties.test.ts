@@ -7,7 +7,7 @@ import {
   assert,
 } from 'vitest';
 import { TestContainer } from '../../helpers/test-container';
-import { PropertyPaginatedResult, State } from '../../../src/graphql/graphql';
+import { PropertyPaginatedResult } from '../../../src/graphql/graphql';
 import { Server } from '../../../src/infrastructure/server/server';
 import {
   mockProperties,
@@ -71,7 +71,7 @@ describe('Query Properties Integration Tests', () => {
   it('should filter properties by state', async () => {
     const response = await server.apollo.executeOperation({
       query: GET_PROPERTIES,
-      variables: { filter: { state: State.Ma } },
+      variables: { filter: { state: 'MA' } },
     });
 
     expect(response.body.kind).toBe('single');
@@ -80,7 +80,7 @@ describe('Query Properties Integration Tests', () => {
     const result = response.body.singleResult?.data
       ?.getProperties as PropertyPaginatedResult;
     expect(result.properties).toHaveLength(1);
-    expect(result.properties[0].state).toBe(State.Ma);
+    expect(result.properties[0].state).toBe('MA');
   });
 
   it('should sort properties by creation date', async () => {
@@ -127,7 +127,7 @@ describe('Query Properties Integration Tests', () => {
       variables: {
         filter: {
           city: 'New York',
-          state: State.Ny
+          state: 'NY'
         }
       },
     });
@@ -136,7 +136,7 @@ describe('Query Properties Integration Tests', () => {
     assert(response.body.kind === 'single');
     const result = response.body.singleResult?.data?.getProperties as PropertyPaginatedResult;
     
-    expect(result.properties.every(p => p.city === 'New York' && p.state === State.Ny)).toBe(true);
+    expect(result.properties.every(p => p.city === 'New York' && p.state === 'NY')).toBe(true);
   });
 
   it('should handle empty result sets gracefully', async () => {

@@ -4,10 +4,10 @@ import { Configuration } from '../../src/shared/config/config';
 import { PropertyRepository } from '../../src/modules/property/repositories/property.repository';
 import { WeatherService } from '../../src/modules/weather/services/weather.service';
 import { PropertyService } from '../../src/modules/property/services/property.service';
-import  { IContainer } from '../../src/infrastructure/deps-manager/container.abstract';
+import  { AbstractContainer } from '../../src/infrastructure/deps-manager/container.abstract';
 import { mockWeatherData } from './mocks/weather.mock';
 
-export class TestContainer extends IContainer {
+export class TestContainer extends AbstractContainer {
   private static testInstance: TestContainer;
   protected registry: Registry;
 

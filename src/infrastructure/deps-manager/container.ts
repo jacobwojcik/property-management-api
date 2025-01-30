@@ -1,13 +1,13 @@
 import { PrismaClient } from '@prisma/client';
 
-import { IContainer } from './container.abstract.js';
+import { AbstractContainer } from './container.abstract.js';
 import { Registry, Dependencies } from './registry.js';
 import { PropertyRepository } from '../../modules/property/repositories/property.repository.js';
 import { WeatherService } from '../../modules/weather/services/weather.service.js';
 import { PropertyService } from '../../modules/property/services/property.service.js';
 import { Configuration } from '../../shared/config/config.js';
 
-export class Container extends IContainer {
+export class Container extends AbstractContainer {
   private static instance: Container;
 
   constructor() {

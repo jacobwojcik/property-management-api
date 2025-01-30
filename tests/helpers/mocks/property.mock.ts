@@ -1,5 +1,3 @@
-import { State } from "../../../src/graphql/graphql";
-
 export const mockPropertyInput = {
   street: '123 Test St',
   city: 'Test City',
@@ -32,7 +30,7 @@ export const mockProperty = {
   id: '1',
   street: '123 Test St',
   city: 'Test City',
-  state: State.Ny,
+  state: 'NY',
   zipCode: '12345',
   lat: 40.7128,
   long: -74.006,

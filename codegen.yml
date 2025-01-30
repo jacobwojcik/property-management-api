@@ -2,12 +2,14 @@ schema: src/graphql/schema.graphql
 generates:
   src/graphql/graphql.ts:
     plugins:
+      - add:
+          content: |
+            /* eslint-disable-next-line */
+            /* eslint-disable */
+            // @generated
+            // This file was automatically generated and should not be edited.
       - typescript
       - typescript-resolvers
     config:
-      contextType: ../types#Context
-      mappers:
-        Property: ../types#PrismaProperty
-        WeatherData: ../types#PrismaWeatherData
       scalars:
         DateTime: Date

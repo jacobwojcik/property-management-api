@@ -1,6 +1,6 @@
 import type { Registry } from './registry.js';
 
-export abstract class IContainer {
+export abstract class AbstractContainer {
   protected registry!: Registry;
   abstract init(): Promise<void>;
   abstract get<T>(token: symbol): T;

@@ -1,5 +1,5 @@
-import { z } from 'zod';
 import { State } from '@prisma/client';
+import { z } from 'zod';
 
 export const createPropertySchema = z.object({
   city: z.string().min(1),

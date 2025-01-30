@@ -1,8 +1,9 @@
-import type { Property, Prisma } from '@prisma/client';
+import type { Prisma } from '@prisma/client';
 import type { PropertyRepository } from '../repositories/property.repository.js';
 import type {
   CreatePropertyInput,
   PropertyFilter,
+  Property,
 } from '../../../graphql/graphql';
 import type { WeatherService } from '../../weather/services/weather.service.js';
 
