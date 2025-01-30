@@ -49,19 +49,18 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
+      - name: Generate Prisma Client
+        run: |
+          pnpm prisma:generate
+
+      - name: Run migrations
+        run: pnpm db:migrate
+
       - name: Type Check
         run: pnpm type-check
 
       - name: Lint
         run: pnpm lint
-
-      - name: Generate Prisma Client
-        run: |
-          pnpm prisma:generate
-          pnpm prisma:generate:test
-
-      - name: Run migrations
-        run: pnpm db:migrate:test
 
       - name: Run tests
         run: |
