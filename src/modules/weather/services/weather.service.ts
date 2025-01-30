@@ -1,4 +1,4 @@
-import type { WeatherData } from '../../../graphql/graphql';
+import type { WeatherData } from '../../../graphql/types';
 
 import {
   WeatherError,

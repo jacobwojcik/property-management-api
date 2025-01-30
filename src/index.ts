@@ -1,7 +1,7 @@
 import { Server } from './infrastructure/server/server.js';
-import { Container } from './infrastructure/deps-manager/container.js';
+import { DepsContainer } from './infrastructure/deps-manager/deps-container.js';
 
-const container = Container.getInstance();
+const container = DepsContainer.getInstance();
 const server = new Server(container);
 
 server

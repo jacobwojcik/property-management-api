@@ -1,15 +1,11 @@
 import pino from 'pino';
 
-import type { Configuration } from '../config/config';
-
 export class Logger {
   private static instance: pino.Logger;
 
-  private static getLoggerConfig(config?: Configuration): pino.LoggerOptions {
-    const isTestEnv = config?.isTest() ?? false;
-
+  private static getLoggerConfig(): pino.LoggerOptions {
     return {
-      level: isTestEnv ? 'silent' : 'info',
+      level: process.env.NODE_ENV === 'test' ? 'silent' : 'info',
       transport: {
         target: 'pino-pretty',
         options: {
@@ -24,9 +20,9 @@ export class Logger {
     };
   }
 
-  static getInstance(config?: Configuration): pino.Logger {
+  static getInstance(): pino.Logger {
     if (!this.instance) {
-      const loggerConfig = this.getLoggerConfig(config);
+      const loggerConfig = this.getLoggerConfig();
       this.instance = pino(loggerConfig);
     }
 

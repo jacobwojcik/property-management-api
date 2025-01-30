@@ -1,5 +1,6 @@
-import { State } from '@prisma/client';
 import { z } from 'zod';
+
+import { State } from '../../../graphql/types';
 
 export const createPropertySchema = z.object({
   city: z.string().min(1),

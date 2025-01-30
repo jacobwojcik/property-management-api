@@ -4,11 +4,13 @@ import type {
   CreatePropertyInput,
   PropertyFilter,
   Property,
-} from '../../../graphql/graphql';
+} from '../../../graphql/types';
 import type { WeatherService } from '../../weather/services/weather.service.js';
 
+import { PropertyNotFoundError } from '../../../shared/errors/property.errors.js';
 import { createPropertySchema } from '../schema/property.schema.js';
 import { ValidationError } from '../../../shared/errors/base.error.js';
+import { formatZodError } from '../../../utils/formatZodError.js';
 
 export class PropertyService {
   constructor(
@@ -66,8 +68,14 @@ export class PropertyService {
     };
   }
 
-  async getProperty(id: string): Promise<Property | null> {
-    return this.propertyRepository.findById(id);
+  async getProperty(id: string): Promise<Property> {
+    const property = await this.propertyRepository.findById(id);
+
+    if (!property) {
+      throw new PropertyNotFoundError(id);
+    }
+
+    return property;
   }
 
   async createProperty(input: CreatePropertyInput): Promise<Property> {
@@ -76,7 +84,7 @@ export class PropertyService {
     if (!validationResult.success) {
       throw new ValidationError(
         'Invalid property data',
-        validationResult.error.errors
+        formatZodError(validationResult.error)
       );
     }
 
@@ -97,6 +105,12 @@ export class PropertyService {
   }
 
   async deleteProperty(id: string): Promise<boolean> {
+    const property = await this.propertyRepository.findById(id);
+
+    if (!property) {
+      throw new PropertyNotFoundError(id);
+    }
+
     return this.propertyRepository.delete(id);
   }
 }

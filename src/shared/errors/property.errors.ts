@@ -1,4 +1,4 @@
-import { ApplicationError, ErrorCode } from './base.error';
+import { ApplicationError, ErrorCode } from './base.error.js';
 
 export class PropertyNotFoundError extends ApplicationError {
   constructor(id: string) {

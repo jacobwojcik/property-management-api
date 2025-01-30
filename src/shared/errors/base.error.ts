@@ -1,3 +1,5 @@
+import type { ValidationErrorDetail } from '../../utils/formatZodError.js';
+
 export enum ErrorCode {
   VALIDATION_ERROR = 'VALIDATION_ERROR',
   NOT_FOUND = 'NOT_FOUND',
@@ -33,9 +35,9 @@ export class ApplicationError extends Error {
 export class ValidationError extends ApplicationError {
   constructor(
     message: string,
-    public details: unknown[]
+    public details: ValidationErrorDetail[]
   ) {
-    super(ErrorCode.VALIDATION_ERROR, message, 400);
-    this.details = details;
+    super(ErrorCode.VALIDATION_ERROR, message, 400, details);
+    Object.setPrototypeOf(this, ValidationError.prototype);
   }
 }
